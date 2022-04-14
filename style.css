@@ -1,0 +1,22 @@
+th {
+    width: 80px;
+    height: 80px;
+}
+
+.dark {
+    background-color: black;
+    border: 2px solid black;
+}
+
+.white {
+    border: 2px solid black;
+}
+
+.white:hover {
+    background-color: rgba(128, 128, 128, 0.572);
+}
+
+.dark:hover {
+    background-color: rgba(128, 128, 128, 0.572);
+    z-index: 0;
+}
