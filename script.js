@@ -14,7 +14,8 @@ function build(newTable){
                 td.className = 'dark';
                 tr.appendChild(td);
             }
-            ////newTable.addEventListener('click', () => {th.className = 'clicked';})
+            let count = 0;
+            td.addEventListener("click", () => {td.classList.toggle("clicked")})
         }
     }
 }
@@ -58,7 +59,6 @@ function populate(newTable) {
     }
 
 }
-
 
 const newTable = document.createElement('table');
 document.body.appendChild(newTable); // Create table;
