@@ -5,6 +5,7 @@ const DARK_PLAYER = 'Black';
 let selectedCell;
 let pieces = [];
 
+// Builds the board.
 function build(newTable) {
     for (let i = 0; i < BOARD_SIZE; i++) {
         let tr = document.createElement('tr');
@@ -15,10 +16,12 @@ function build(newTable) {
             td.style = 'text-align: center; font-size: 60px;';
             if ((j + i) % 2 === 0) {
                 td.className = 'white';
+                td.id = (i + "_" + j)
                 tr.appendChild(td);
             }
             else {
                 td.className = 'dark';
+                td.id = (i + "_" + j)
                 tr.appendChild(td);
             }
             td.addEventListener('click', onCellClick);
@@ -30,29 +33,131 @@ function build(newTable) {
     }
 }
 
-function onCellClick(event) {  
+// When clicking a td it marks it.
+function onCellClick(event) {
     if (selectedCell !== undefined) {
-        selectedCell.classList.remove('clicked');
+        cleanBoard();
     }
     selectedCell = event.currentTarget;
-    selectedCell.classList.add('clicked');
-    //checkMoves();
+    selectedCell.classList.toggle('clicked');
+    if (selectedCell.firstChild !== null) {
+        checkMoves();
+    }
 }
 
-//function checkMoves(){
-//    //console.log(getInitialBoard()[1].row)
-//    //console.log(getInitialBoard()[1].col)
-//    //console.log(getInitialBoard()[1].name)
-//    //console.log(selectedCell.firstChild);
-//    selectedCell = selectedCell.classList;
-//    console.log(selectedCell)
-//    //if (selectedCell.firstChild !== null) {
-//    //    // loop to check if the selected cell is the piece
-//    //    for (let i = 0; i< getInitialBoard().length; i++){
-//    //    }
-//    //}
-//}
+// Cleans all the board.
+function cleanBoard() {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+        for (let j = 0; j < BOARD_SIZE; j++) {
+            move = document.getElementById(`${i}_${j}`)
+            move.classList.remove('clicked')
+        }
+    }
+}
+// Marks the moves of each piece.
+// ..By the way - this is shit.
+function checkMoves() {
+    let move = selectedCell;
+    cleanBoard();
+    let splitter = selectedCell.id.split('_')
+    let row = parseInt(splitter[0]); // from string to int
+    let col = parseInt(splitter[1]);
+    // Pawns
+    if (row === 6){
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            if (selectedCell.id === `${row}_${i}`) {
+                move = document.getElementById(`${row-1}_${i}`)
+                move.classList.add('clicked')
+                if (row === 6){ // Stupid now but differ from first move.
+                    move = document.getElementById(`${row-2}_${i}`)
+                    move.classList.add('clicked')
+                }
+            }
+        }
+    }
+    //Rooks
+    if (selectedCell.id === '7_0' || selectedCell.id === '7_7') {
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            move = document.getElementById(`${row}_${i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${i}_${col}`)
+            move.classList.toggle('clicked')
+        }
+    }
+    // Knights
+    if (selectedCell.id === '7_1' || selectedCell.id === '7_6') {
+        if (selectedCell.id === '7_1') {
+            // Lemi iesh koh lhashev....
+            //for (let i=0; i<BOARD_SIZE;i++){
+            //    row+2
+            //    col-+1
+            //    //
+            //    row+1
+            //    col+-2
+            //}
+            move = document.getElementById(`5_0`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`5_2`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`6_3`)
+            move.classList.toggle('clicked')
+        } else {
+            move = document.getElementById(`5_7`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`5_5`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`6_4`)
+            move.classList.toggle('clicked')
+        }
+    }
+    // Bishops - Math man.
+    if (selectedCell.id === '7_2' || selectedCell.id === '7_5') {
+        for (let j = 0; j < BOARD_SIZE-col; j++) {
+            move = document.getElementById(`${row - j}_${col + j}`);
+            console.log(`${row - j}_${col + j}`);
+            move.classList.toggle('clicked');
+        }
+        for (let i = 0; i < BOARD_SIZE - (row - col); i++) {
+            move = document.getElementById(`${row - i}_${col - i}`)
+            console.log(`${row - i}_${col - i}`);
+            move.classList.toggle('clicked')
+        }
+    }
+    // Queen
+    if (selectedCell.id === '7_3') {
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            move = document.getElementById(`${row}_${i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${i}_${col}`)
+            move.classList.toggle('clicked')
+        }
+        for (let j = 1; j < BOARD_SIZE-col; j++) {
+            move = document.getElementById(`${row - j}_${col + j}`);
+            move.classList.toggle('clicked');
+        }
+        for (let i = 1; i < BOARD_SIZE - (row - col); i++) {
+            move = document.getElementById(`${row - i}_${col - i}`)
+            move.classList.toggle('clicked')
+        }
+    }
+    // King
+    if (selectedCell.id === '7_4') {
+        for(let i=0; i<2;i++){
+            move = document.getElementById(`${row}_${col+i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${row}_${col-i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${row-i}_${col+i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${row-i}_${col-i}`)
+            move.classList.toggle('clicked')
+            move = document.getElementById(`${row-i}_${col}`)
+            move.classList.toggle('clicked')
+        }
+    }
+}
 
+// Adds the image to the cell.
 function addImg(cell, color, name) {
     const img = document.createElement('img');
     img.style = 'width: 60px;height:60px;'
@@ -61,7 +166,7 @@ function addImg(cell, color, name) {
 }
 
 class piece {
-    constructor(row, col, color, name){
+    constructor(row, col, color, name) {
         this.row = row;
         this.col = col;
         this.color = color;
@@ -69,34 +174,28 @@ class piece {
     }
 }
 
-
+// Puts the pieces on the board
 function getInitialBoard() {
     let result = [];
-    result.push(new piece(0, 0,  DARK_PLAYER, "Rook"))
-    result.push(new piece(0, 1, DARK_PLAYER, "Knight"))
-    result.push(new piece(0, 2,  DARK_PLAYER, "Bishop"))
-    result.push(new piece(0, 3, DARK_PLAYER, "Queen"))
-    result.push(new piece(0, 4,  DARK_PLAYER, "King"))
-    result.push(new piece(0, 5,  DARK_PLAYER, "Bishop"))
-    result.push(new piece(0, 6, DARK_PLAYER, "Knight"))
-    result.push(new piece(0, 7,  DARK_PLAYER, "Rook"))
-    for (let i =0; i<8; i++){
-        result.push(new piece(1, i,  DARK_PLAYER, "Pawn"))
+    addFirstRowPieces(result, 0, DARK_PLAYER);
+    addFirstRowPieces(result, 7, WHITE_PLAYER);
+    for (let i = 0; i < 8; i++) {
+        result.push(new piece(1, i, DARK_PLAYER, "Pawn"))
+        result.push(new piece(6, i, WHITE_PLAYER, "Pawn"))
     }
-    for (let i =0; i<8; i++){
-        result.push(new piece(6, i,  WHITE_PLAYER, "Pawn"))
-    }
-    result.push(new piece(7, 0,  WHITE_PLAYER, "Rook"))
-    result.push(new piece(7, 1, WHITE_PLAYER, "Knight"))
-    result.push(new piece(7, 2,  WHITE_PLAYER, "Bishop"))
-    result.push(new piece(7, 3, WHITE_PLAYER, "Queen"))
-    result.push(new piece(7, 4,  WHITE_PLAYER, "King"))
-    result.push(new piece(7, 5,  WHITE_PLAYER, "Bishop"))
-    result.push(new piece(7, 6, WHITE_PLAYER, "Knight"))
-    result.push(new piece(7, 7,  WHITE_PLAYER, "Rook"))
     return result;
 }
-
+// To avoid duplicate in getInitialBoard().
+function addFirstRowPieces(result, row, color) {
+    result.push(new piece(row, 0, color, "Rook"));
+    result.push(new piece(row, 1, color, "Knight"));
+    result.push(new piece(row, 2, color, "Bishop"));
+    result.push(new piece(row, 3, color, "Queen"));
+    result.push(new piece(row, 4, color, "King"));
+    result.push(new piece(row, 5, color, "Bishop"));
+    result.push(new piece(row, 6, color, "Knight"));
+    result.push(new piece(row, 7, color, "Rook"));
+}
 
 const newTable = document.createElement('table');
 document.body.appendChild(newTable); // Create table.
