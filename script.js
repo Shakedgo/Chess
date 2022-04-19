@@ -80,45 +80,45 @@ class piece {
     }
     getKnightRelativeMoves() {
         let result = [];
-        for (let i = 1; i < BOARD_SIZE; i++) {
-            result.push([i, 0]);
-            result.push([-i, 0]);
-            result.push([0, i]);
-            result.push([0, -i]);
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            result.push([0 + 2, 0 - 1]);
+            result.push([0 + 2, 0 + 1]);
+            result.push([0 + 1, 0 - 2]);
+            result.push([0 + 1, 0 + 2]);
+
+            result.push([0 - 2, 0 + 1]);
+            result.push([0 - 2, 0 - 1]);
+            result.push([0 - 1, 0 + 2]);
+            result.push([0 - 1, 0 - 2]);
         }
         return result;
-        // row+2
-        // col-+1
-        // row+1
-        // col+-2
-
     }
     getBishopRelativeMoves() {
         let result = [];
-        for (let i = 0; i < BOARD_SIZE - this.col; i++) {
+        for (let i = 1; i < BOARD_SIZE - this.col; i++) {
             result.push([0 - i, 0 + i]);
         }
-        for (let i = 0; i < BOARD_SIZE - (this.row - this.col); i++) {
+        for (let i = 1; i < BOARD_SIZE - (this.row - this.col); i++) {
             result.push([0 - i, 0 - i]);
         }
-        for (let i = 0; i < BOARD_SIZE + this.col; i++) {
+        for (let i = 1; i < BOARD_SIZE + this.col; i++) {
             result.push([0 + i, 0 - i]);
         }
-        for (let i = 0; i < BOARD_SIZE + (this.row - this.col); i++) {
+        for (let i = 1; i < BOARD_SIZE + (this.row - this.col); i++) {
             result.push([0 + i, 0 + i]);
         }
         return result;
     }
     getKingRelativeMoves() {
         let result = [];
-        for (let i = 0; i < 2; i++) {
+        for (let i = 1; i < 2; i++) {
             result.push([0, 0 + i]);
             result.push([0, 0 - i]);
             result.push([0 - i, 0 + i]);
             result.push([0 - i, 0 - i]);
             result.push([0 - i, 0]);
         }
-        for (let i = 0; i < 2; i++) {
+        for (let i = 1; i < 2; i++) {
             result.push([0, 0 - i]);
             result.push([0, 0 + i]);
             result.push([0 + i, 0 - i]);
@@ -129,16 +129,16 @@ class piece {
     }
     getQueenRelativeMoves() {
         let result = [];
-        for (let i = 0; i < BOARD_SIZE - this.col; i++) {
+        for (let i = 1; i < BOARD_SIZE - this.col; i++) {
             result.push([0 - i, 0 + i]);
         }
-        for (let i = 0; i < BOARD_SIZE - (this.row - this.col); i++) {
+        for (let i = 1; i < BOARD_SIZE - (this.row - this.col); i++) {
             result.push([0 - i, 0 - i]);
         }
-        for (let i = 0; i < BOARD_SIZE + this.col; i++) {
+        for (let i = 1; i < BOARD_SIZE + this.col; i++) {
             result.push([0 + i, 0 - i]);
         }
-        for (let i = 0; i < BOARD_SIZE + (this.row - this.col); i++) {
+        for (let i = 1; i < BOARD_SIZE + (this.row - this.col); i++) {
             result.push([0 + i, 0 + i]);
         }
         for (let i = 1; i < BOARD_SIZE; i++) {
@@ -177,10 +177,6 @@ function build() {
         }
     }
     pieces = getInitialBoard();
-    //console.log('pieces', pieces);
-    console.log(pieces[0]);
-    //pieces[16].getPossibleMoves();
-
 
     for (let piece of pieces) {
         addImg(table.rows[piece.row].cells[piece.col], piece.color, piece.name);
@@ -193,7 +189,7 @@ function onCellClick(event, row, col) {
     // Clean board.
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
-            table.rows[i].cells[j].classList.remove('clicked');
+            table.rows[i].cells[j].classList.remove('possibleMove');
         }
     }
 
@@ -202,7 +198,7 @@ function onCellClick(event, row, col) {
             console.log(piece);
             let possibleMoves = piece.getPossibleMoves();
             for (let possibleMove of possibleMoves)
-                table.rows[possibleMove[0]].cells[possibleMove[1]].classList.add('clicked');
+                table.rows[possibleMove[0]].cells[possibleMove[1]].classList.add('possibleMove');
         }
     }
 

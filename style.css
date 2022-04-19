@@ -18,5 +18,9 @@ td:hover {
 }
 */
 .clicked {
-    background-color: rgba(180, 0, 0, 0.572);
+    background-color: rgba(180, 0, 0, 0.766);
+}
+
+.possibleMove {
+    background-color: rgba(180, 0, 0, 0.457);
 }
